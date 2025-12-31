@@ -154,15 +154,12 @@ insurance-mate/
 ├── login.html              # Login/Register page
 ├── styles.css              # Global styles
 ├── app.js                  # Application logic
-├── firebase-config.js      # Firebase configuration
 ├── README.md               # Project overview
 ├── CONTRIBUTING.md         # This file
 ├── LICENSE                 # MIT License
 ├── CHANGELOG.md            # Version history
 ├── USER_MANUAL_TH.md       # Thai user manual
 ├── BACKEND_README.md       # Backend documentation
-├── QUICKSTART.md           # Quick start guide
-├── FIREBASE_SETUP.md       # Firebase setup guide
 └── .gitignore             # Git ignore rules
 ```
 
@@ -281,3 +278,4 @@ By contributing, you agree that your contributions will be licensed under the MI
 ---
 
 Thank you for making InsuranceMate better! 🎉
+
