@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - InsuranceMate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: var(--spacing-lg);
+        }
+
+        .login-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .login-logo {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .login-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .login-subtitle {
+            color: var(--color-text-light);
+        }
+
+        .tab-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            background: var(--color-background);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+        }
+
+        .tab-btn {
+            padding: var(--spacing-md);
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: var(--color-text-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-family: var(--font-family);
+        }
+
+        .tab-btn.active {
+            background: var(--color-surface);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-danger);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">🛡️</div>
+                <h1 class="login-title">InsuranceMate</h1>
+                <p class="login-subtitle">ผู้ช่วยเรื่องประกันในมือคุณ</p>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('login')">เข้าสู่ระบบ</button>
+                <button class="tab-btn" onclick="switchTab('register')">สมัครสมาชิก</button>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <!-- Login Tab -->
+            <div id="loginTab" class="tab-content active">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">อีเมล</label>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รหัสผ่าน</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="รหัสผ่านของคุณ"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg mt-lg">
+                        เข้าสู่ระบบ
+                    </button>
+                </form>
+
+                <div class="text-center mt-md">
+                    <p class="text-sm text-muted">ทดสอบด้วย: demo@email.com / password</p>
+                </div>
+            </div>
+
+            <!-- Register Tab -->
+            <div id="registerTab" class="tab-content">
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">ชื่อ-นามสกุล</label>
+                        <input type="text" class="form-input" id="registerName" placeholder="คุณสมชาย" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="tel" class="form-input" id="registerPhone" placeholder="089-123-4567" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">อีเมล</label>
+                        <input type="email" class="form-input" id="registerEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label>
+                        <input type="password" class="form-input" id="registerPassword" placeholder="รหัสผ่าน"
+                            minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ยืนยันรหัสผ่าน</label>
+                        <input type="password" class="form-input" id="registerPasswordConfirm"
+                            placeholder="ยืนยันรหัสผ่าน" minlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg mt-lg">
+                        สมัครสมาชิก
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        if (localStorage.getItem('currentUser')) {
+            window.location.href = 'index.html';
+        }
+
+        // Create demo account if not exists
+        if (!localStorage.getItem('users')) {
+            const demoUser = {
+                id: 'demo-user-1',
+                name: 'ผู้ใช้ทดสอบ',
+                email: 'demo@email.com',
+                password: 'password',
+                phone: '089-123-4567',
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('users', JSON.stringify([demoUser]));
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showSuccess('เข้าสู่ระบบสำเร็จ!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                showError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const phone = document.getElementById('registerPhone').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                showError('รหัสผ่านไม่ตรงกัน');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+            if (users.find(u => u.email === email)) {
+                showError('อีเมลนี้ถูกใช้งานแล้ว');
+                return;
+            }
+
+            const newUser = {
+                id: 'user-' + Date.now(),
+                name,
+                email,
+                password,
+                phone,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+            showSuccess('สมัครสมาชิกสำเร็จ!');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+
+            hideMessages();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+    </script>
+</body>
+
+</html>
