@@ -466,6 +466,7 @@ Password: password
 
 **Made with ❤️ for Thai Insurance Users**
 
-_เวอร์ชัน 1.0.0 | ธันวาคม 2567_
+_เวอร์ชัน 1.0.0 | ธันวาคม 2568_
 
 </div>
+
