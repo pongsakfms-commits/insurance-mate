@@ -102,18 +102,18 @@ const utils = {
         const date = new Date(dateStr);
         return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
     },
-    
+
     formatCurrency(amount) {
         return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);
     },
-    
+
     getDaysUntil(dateStr) {
         const target = new Date(dateStr);
         const today = new Date();
         const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
         return diff;
     },
-    
+
     getInsuranceIcon(type) {
         const icons = {
             auto: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14v-5l-3-3H8L5 12v5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>',
@@ -135,7 +135,7 @@ const components = {
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
     },
-    
+
     showModal(title, content) {
         const container = document.getElementById('modalContainer');
         container.innerHTML = `
@@ -387,7 +387,7 @@ const pages = {
 
             <h3 class="mb-md">ตัวแทนแนะนำ</h3>
 
-            ${[1,2,3].map(i => `
+            ${[1, 2, 3].map(i => `
                 <div class="card mb-md">
                     <div class="flex" style="align-items: center; gap: 1rem;">
                         <img src="https://ui-avatars.com/api/?name=Agent${i}&background=random&size=60" 
@@ -395,7 +395,7 @@ const pages = {
                         <div style="flex: 1;">
                             <div style="font-weight: 600;">นายตัวแทน ${i}</div>
                             <div class="text-sm text-muted">กรุงเทพประกันภัย</div>
-                            <div class="text-sm text-muted">⭐ 4.${5+i}/5.0</div>
+                            <div class="text-sm text-muted">⭐ 4.${5 + i}/5.0</div>
                         </div>
                         <button class="btn btn-primary btn-sm" onclick="app.connectAgent(${i})">
                             เชื่อมต่อ
@@ -701,7 +701,7 @@ const app = {
     viewFamilyMember(id) {
         const member = state.family.find(m => m.id === id);
         const memberInsurances = state.insurances.filter(i => i.owner === member.relation.toLowerCase());
-        
+
         components.showModal(member.name, `
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <div style="font-size: 4rem; margin-bottom: 0.5rem;">${member.avatar}</div>
@@ -790,7 +790,7 @@ const app = {
     sendMessage() {
         const input = document.getElementById('chatInput');
         if (!input.value.trim()) return;
-        
+
         const msg = {
             id: Date.now(),
             type: 'sent',
@@ -798,7 +798,7 @@ const app = {
             time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
         };
         state.chatMessages.push(msg);
-        
+
         const messages = document.getElementById('chatMessages');
         messages.innerHTML += `
             <div class="chat-message sent">
@@ -886,7 +886,10 @@ const app = {
     },
 
     exportPDF() {
-        components.showToast('กำลังสร้างไฟล์ PDF...', 'success');
+        components.showToast('กำลังสร้างไฟล์ PDF... (จำลอง)', 'success');
+        setTimeout(() => {
+            components.showToast('✅ ส่งออก PDF สำเร็จ!', 'success');
+        }, 1500);
     },
 
     agentPortal() {
@@ -894,7 +897,171 @@ const app = {
     },
 
     settings() {
-        components.showToast('กำลังเปิดหน้าตั้งค่า...', 'info');
+        components.showModal('ตั้งค่า', `
+            <div class="card mb-md">
+                <strong>👤 ข้อมูลส่วนตัว</strong>
+                <p class="text-sm text-muted" style="margin-top: 0.5rem;">แก้ไขชื่อ เบอร์โทร อีเมล</p>
+            </div>
+            
+            <div class="card mb-md">
+                <strong>🔔 การแจ้งเตือน</strong>
+                <p class="text-sm text-muted" style="margin-top: 0.5rem;">ตั้งค่าการแจ้งเตือนกรมธรรม์</p>
+            </div>
+            
+            <div class="card mb-md">
+                <strong>🔒 ความเป็นส่วนตัว</strong>
+                <p class="text-sm text-muted" style="margin-top: 0.5rem;">จัดการความเป็นส่วนตัวและความปลอดภัย</p>
+            </div>
+            
+            <div class="card">
+                <strong>🌐 ภาษา</strong>
+                <p class="text-sm text-muted" style="margin-top: 0.5rem;">ภาษาไทย (Thai)</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal()">ปิด</button>
+                <button class="btn btn-primary" onclick="app.saveSettings()">บันทึก</button>
+            </div>
+        `);
+    },
+
+    saveSettings() {
+        components.showToast('✅ บันทึกการตั้งค่าเรียบร้อย!', 'success');
+        this.closeModal();
+    },
+
+    addFamilyMember() {
+        components.showModal('เพิ่มสมาชิกครอบครัว', `
+            <form onsubmit="app.saveFamilyMember(event)">
+                <div class="form-group">
+                    <label class="form-label">ชื่อ-นามสกุล</label>
+                    <input type="text" class="form-input" id="memberName" placeholder="เช่น คุณสมพร สุขใจ" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ความสัมพันธ์</label>
+                    <select class="form-select" id="memberRelation" required>
+                        <option value="">เลือกความสัมพันธ์</option>
+                        <option value="แม่">แม่</option>
+                        <option value="พ่อ">พ่อ</option>
+                        <option value="คู่สมรส">คู่สมรส</option>
+                        <option value="ลูก">ลูก</option>
+                        <option value="พี่">พี่</option>
+                        <option value="น้อง">น้อง</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">เลือกอวาตาร์</label>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                        ${['👨', '👩', '👦', '👧', '👴', '👵', '👨‍💼', '👩‍💼', '👱', '👶'].map(emoji => `
+                            <button type="button" class="btn btn-outline" style="font-size: 1.5rem; padding: 0.5rem;" onclick="app.selectAvatar('${emoji}')">${emoji}</button>
+                        `).join('')}
+                    </div>
+                    <input type="hidden" id="memberAvatar" value="👤">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="app.closeModal()">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">เพิ่มสมาชิก</button>
+                </div>
+            </form>
+        `);
+    },
+
+    selectAvatar(emoji) {
+        document.getElementById('memberAvatar').value = emoji;
+        document.querySelectorAll('.btn-outline').forEach(btn => btn.style.background = '');
+        event.target.style.background = 'var(--color-primary-light)';
+    },
+
+    saveFamilyMember(e) {
+        e.preventDefault();
+        const name = document.getElementById('memberName').value;
+        const relation = document.getElementById('memberRelation').value;
+        const avatar = document.getElementById('memberAvatar').value;
+
+        const newMember = {
+            id: Date.now(),
+            name,
+            relation,
+            avatar,
+            insuranceCount: 0
+        };
+
+        state.family.push(newMember);
+        components.showToast(`✅ เพิ่ม ${name} เรียบร้อยแล้ว!`, 'success');
+        this.closeModal();
+        this.navigate('family');
+    },
+
+    addInsuranceForMember(memberId) {
+        components.showToast('กำลังเปิดฟอร์มเพิ่มกรมธรรม์...', 'info');
+        this.closeModal();
+    },
+
+    renewPolicy(id) {
+        components.showToast('กำลังเปิดหน้าต่ออายุกรมธรรม์...', 'info');
+        this.closeModal();
+    },
+
+    makeAppointment() {
+        components.showModal('นัดพบตัวแทน', `
+            <form onsubmit="app.submitAppointment(event)">
+                <div class="form-group">
+                    <label class="form-label">วันที่</label>
+                    <input type="date" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">เวลา</label>
+                    <input type="time" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">สถานที่</label>
+                    <select class="form-select" required>
+                        <option value="">เลือกสถานที่</option>
+                        <option value="office">สำนักงานตัวแทน</option>
+                        <option value="home">บ้านของฉัน</option>
+                        <option value="cafe">ร้านกาแฟ</option>
+                        <option value="online">ออนไลน์ (Video Call)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">หมายเหตุ</label>
+                    <textarea class="form-textarea" placeholder="สิ่งที่ต้องการปรึกษา..."></textarea>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="app.closeModal()">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">ยืนยันการนัด</button>
+                </div>
+            </form>
+        `);
+    },
+
+    submitAppointment(e) {
+        e.preventDefault();
+        components.showToast('✅ นัดหมายสำเร็จ! ตัวแทนจะติดต่อกลับเพื่อยืนยัน', 'success');
+        this.closeModal();
+    },
+
+    sendDocument() {
+        components.showToast('กำลังเปิดหน้าส่งเอกสาร...', 'info');
+    },
+
+    scanQRCode() {
+        components.showToast('📷 กำลังเปิดกล้องสแกน QR Code...', 'info');
+    },
+
+    searchByLocation() {
+        components.showToast('🗺️ กำลังค้นหาตัวแทนในพื้นที่ของคุณ...', 'info');
+    },
+
+    connectAgent(id) {
+        components.showToast(`เชื่อมต่อกับตัวแทนคนที่ ${id} สำเร็จ!`, 'success');
     },
 
     help() {
